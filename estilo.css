@@ -1,4 +1,6 @@
-/* Variáveis de estilo padrão */
+/* ========================================== */
+/* VARIÁVEIS DE ESTILO             */
+/* ========================================== */
 :root {
     --cor-fundo: #f0f4f8;
     --cor-texto: #1a202c;
@@ -31,7 +33,9 @@ body.alto-contraste {
     --cor-destaque: #ffff00;
 }
 
-/* Estilos Globais */
+/* ========================================== */
+/* ESTILOS GLOBAIS               */
+/* ========================================== */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--cor-fundo);
@@ -43,7 +47,15 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* Painel de Acessibilidade Fixo no Topo */
+main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* ========================================== */
+/* PAINEL DE ACESSIBILIDADE          */
+/* ========================================== */
 .painel-acessibilidade {
     background-color: var(--cor-cartao);
     border-bottom: 3px solid var(--cor-borda);
@@ -78,7 +90,9 @@ body {
     outline: 4px solid var(--cor-destaque);
 }
 
-/* Cabeçalho Principal */
+/* ========================================== */
+/* ELEMENTOS                  */
+/* ========================================== */
 header {
     background-color: var(--cor-cabecalho);
     color: var(--cor-texto-cabecalho);
@@ -98,14 +112,6 @@ header p {
     margin: 0 auto;
 }
 
-/* Conteúdo Principal */
-main {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
-
-/* Títulos de Seção */
 .secao-titulo {
     text-align: center;
     font-size: 2rem;
@@ -115,7 +121,6 @@ main {
     padding-bottom: 10px;
 }
 
-/* Cartões de Informação */
 .cartao {
     background-color: var(--cor-cartao);
     border: 3px solid var(--cor-borda);
@@ -143,6 +148,7 @@ body.alto-contraste .cartao {
     font-size: 2.5rem;
 }
 
+/* blocos de destaque técnico */
 .destaque-perigo {
     color: var(--cor-alerta);
     font-weight: bold;
@@ -181,7 +187,9 @@ li {
     margin-bottom: 15px;
 }
 
-/* Estilos do Simulador / Jogo */
+/* ========================================== */
+/* SIMULADOR                  */
+/* ========================================== */
 .simulador-area {
     background-color: var(--cor-cartao);
     border: 4px solid var(--cor-destaque);
@@ -275,7 +283,9 @@ body.alto-contraste .botao-seguro {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Dicionário Rápido */
+/* ========================================== */
+/* COMPONENTES COMPLEMENTARES       */
+/* ========================================== */
 details {
     background-color: var(--cor-cartao);
     border: 2px solid var(--cor-borda);
@@ -302,7 +312,6 @@ summary {
     border-top: 1px solid var(--cor-borda);
 }
 
-/* Lista de Verificação (Checklist) */
 .item-checklist {
     display: flex;
     align-items: center;
@@ -341,7 +350,9 @@ footer {
     background-color: var(--cor-cartao);
 }
 
-/* Responsividade para celulares */
+/* ========================================== */
+/* RESPONSIVIDADE               */
+/* ========================================== */
 @media (max-width: 600px) {
     .painel-acessibilidade {
         flex-direction: column;
