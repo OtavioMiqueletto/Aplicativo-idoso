@@ -17,12 +17,18 @@ function alternarAltoContraste() {
 }
 
 // --- 2. CONTROLE DA LISTA DE VERIFICAÇÃO (CHECKLIST) ---
-function marcarItem(elemento) {
-    const checkbox = elemento.querySelector('input[type="checkbox"]');
-    if (event.target !== checkbox && event.target.tagName !== 'LABEL') {
-        checkbox.checked = !checkbox.checked;
+function marcarItem(elemento, event) {
+    // Se o usuário clicou direto no checkbox ou nos elementos de texto internos da label, deixa o navegador agir nativamente
+    if (event.target.tagName === 'INPUT' || event.target.tagName === 'LABEL' || event.target.closest('label')) {
+        return;
     }
-    calcularSeguranca();
+    
+    // Altera o estado do checkbox manualmente se o clique ocorreu na área vazia da div do card
+    const checkbox = elemento.querySelector('input[type="checkbox"]');
+    if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+        calcularSeguranca();
+    }
 }
 
 function calcularSeguranca() {

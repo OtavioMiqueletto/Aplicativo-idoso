@@ -26,6 +26,7 @@
     </header>
 
     <main>
+
         <h2 class="secao-titulo">🎯 Jogo de Treino: Golpe ou Seguro?</h2>
         
         <section class="simulador-area" aria-label="Simulador de Mensagens Suspeitas">
@@ -45,6 +46,7 @@
                 <button class="botao-acesso" style="margin: 20px auto 0 auto;" onclick="proximoCenario()">Próximo Desafio ➡️</button>
             </div>
         </section>
+
 
         <h2 class="secao-titulo">📚 Catálogo de Golpes Comuns</h2>
 
@@ -117,31 +119,32 @@
             </div>
         </article>
 
+
         <h2 class="secao-titulo">🛡️ Minha Lista de Proteção (Checklist)</h2>
         <section class="cartao" aria-label="Checklist de Segurança">
             <p>Selecione abaixo as ações que você já realiza no seu dia a dia para ver o quanto você já está protegido!</p>
             
-            <div class="item-checklist" onclick="marcarItem(this)">
+            <div class="item-checklist" onclick="marcarItem(this, event)">
                 <input type="checkbox" id="opcao-whats" onchange="calcularSeguranca()">
                 <label for="opcao-whats"><strong>Eu tenho "Confirmação em Duas Etapas" ativada no meu WhatsApp.</strong></label>
             </div>
 
-            <div class="item-checklist" onclick="marcarItem(this)">
+            <div class="item-checklist" onclick="marcarItem(this, event)">
                 <input type="checkbox" id="opcao-ligar" onchange="calcularSeguranca()">
                 <label for="opcao-ligar"><strong>Eu sempre ligo para confirmar antes de fazer PIX para parentes que pedem no WhatsApp.</strong></label>
             </div>
 
-            <div class="item-checklist" onclick="marcarItem(this)">
+            <div class="item-checklist" onclick="marcarItem(this, event)">
                 <input type="checkbox" id="opcao-senha" onchange="calcularSeguranca()">
                 <label for="opcao-senha"><strong>Minhas senhas de banco não estão anotadas no bloco de notas do celular ou atrás do cartão.</strong></label>
             </div>
 
-            <div class="item-checklist" onclick="marcarItem(this)">
+            <div class="item-checklist" onclick="marcarItem(this, event)">
                 <input type="checkbox" id="opcao-links" onchange="calcularSeguranca()">
                 <label for="opcao-links"><strong>Eu nunca clico em links que prometem prêmios ou dinheiro fácil por SMS.</strong></label>
             </div>
 
-            <div class="item-checklist" onclick="marcarItem(this)">
+            <div class="item-checklist" onclick="marcarItem(this, event)">
                 <input type="checkbox" id="opcao-aplicativos" onchange="calcularSeguranca()">
                 <label for="opcao-aplicativos"><strong>Eu só instalo novos aplicativos usando a loja oficial (Play Store no Android ou App Store no iPhone).</strong></label>
             </div>
@@ -150,6 +153,7 @@
                 Marque alguma opção para ver seu resultado!
             </div>
         </section>
+
 
         <h2 class="secao-titulo">📖 Dicionário da Internet Simplificado</h2>
         <section aria-label="Dicionário">
@@ -165,36 +169,4 @@
             <details>
                 <summary>💸 O que é o "PIX"?</summary>
                 <div class="conteudo-termo">
-                    É um sistema moderno que permite enviar e receber dinheiro em segundos de forma digital através do celular, sem precisar ir ao banco físico ou caixa eletrônico.
-                </div>
-            </details>
-
-            <details>
-                <summary>📱 O que é um "SMS" ou "Torpedo"?</summary>
-                <div class="conteudo-termo">
-                    São mensagens curtas de texto que você recebe no celular diretamente pelo seu chip de operadora de telefonia, sem precisar de internet ou do WhatsApp.
-                </div>
-            </details>
-
-            <details>
-                <summary>👾 O que é um "Vírus"?</summary>
-                <div class="conteudo-termo">
-                    É um programa perigoso que pode ser instalado no seu celular escondido. Ele pode deixar o aparelho lento ou tentar roubar informações. Eles costumam vir dentro de aplicativos falsos ou links suspeitos.
-                </div>
-            </details>
-        </section>
-
-        <article class="cartao" style="border-width: 4px; border-color: var(--cor-cabecalho); text-align: center;">
-            <h2><span class="icone" aria-hidden="true">⭐</span> A Regra de Ouro da Segurança</h2>
-            <p style="font-size: 1.3em; font-weight: bold;">Na internet, a pressa é a sua maior inimiga.</p>
-            <p>Sempre que alguém pedir dinheiro, senhas ou disser que há algo errado com suas contas de forma apressada: <strong>PARE, RESPIRE, DESLIGUE e ligue diretamente para o número oficial de quem você conhece ou do seu banco!</strong></p>
-        </article>
-    </main>
-
-    <footer>
-        <p>Inclusão Digital Prática e Segura para Todos.</p>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
+                    É um sistema moderno que permite enviar e receber dinheiro em segundos de
