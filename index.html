@@ -3,170 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internet Segura - Guia Prático Interativo</title>
+    <title>Internet Segura - Guia para Idosos</title>
+    
+    <!-- Importa o Tailwind CSS -->
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <script>
+        // Configuração do Tailwind para usar variáveis CSS (facilita o alto contraste)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fundo: 'var(--cor-fundo)',
+                        texto: 'var(--cor-texto)',
+                        cartao: 'var(--cor-cartao)',
+                        primaria: 'var(--cor-primaria)',
+                        primariaHover: 'var(--cor-primaria-hover)',
+                        destaque: 'var(--cor-destaque)',
+                        borda: 'var(--cor-borda)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Conecta o arquivo de estilos CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-fundo text-texto font-sans min-h-screen flex flex-col">
 
-    <div class="painel-acessibilidade" role="toolbar" aria-label="Ferramentas de Acessibilidade">
-        <button class="botao-acesso" onclick="alterarTamanhoFonte(2)" aria-label="Aumentar tamanho da letra">
-            <span aria-hidden="true">➕</span> Letra Maior
-        </button>
-        <button class="botao-acesso" onclick="alterarTamanhoFonte(-2)" aria-label="Diminuir tamanho da letra">
-            <span aria-hidden="true">➖</span> Letra Menor
-        </button>
-        <button class="botao-acesso" onclick="alternarAltoContraste()" aria-label="Ativar ou desativar alto contraste">
-            <span aria-hidden="true">🌗</span> Alto Contraste
-        </button>
+    <!-- Barra de Acessibilidade -->
+    <div class="bg-cartao border-b-4 border-borda py-3 shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 flex flex-wrap justify-center sm:justify-between items-center gap-4">
+            <span class="font-bold text-xl hidden sm:block">⚙️ Opções de Leitura:</span>
+            <div class="flex gap-3">
+                <button onclick="mudarTamanhoFonte(2)" class="bg-destaque border-2 border-primaria text-texto px-4 py-2 rounded-xl font-bold text-lg hover:bg-borda flex items-center gap-2 transition-colors" aria-label="Aumentar tamanho da letra">
+                    A<span class="text-2xl">+</span>
+                </button>
+                <button onclick="mudarTamanhoFonte(-2)" class="bg-destaque border-2 border-primaria text-texto px-4 py-2 rounded-xl font-bold text-lg hover:bg-borda flex items-center gap-2 transition-colors" aria-label="Diminuir tamanho da letra">
+                    A<span class="text-2xl">-</span>
+                </button>
+                <button onclick="alternarContraste()" class="bg-texto text-cartao border-2 border-texto px-4 py-2 rounded-xl font-bold text-lg hover:opacity-90 flex items-center gap-2 transition-colors" aria-label="Alternar modo de alto contraste">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    Contraste
+                </button>
+            </div>
+        </div>
     </div>
 
-    <header>
-        <h1>Internet Segura para a Melhor Idade</h1>
-        <p>Aprenda jogando, teste seus conhecimentos e descubra como manter o seu celular totalmente protegido contra fraudes!</p>
+    <!-- Cabeçalho Principal -->
+    <header class="max-w-4xl mx-auto px-4 py-12 text-center">
+        <h1 class="text-4xl sm:text-5xl font-extrabold mb-6 leading-tight">Aprenda a se Proteger na Internet!</h1>
+        <p class="text-xl sm:text-2xl mb-8 leading-relaxed">
+            A internet é ótima, mas precisamos ter cuidado. Clique nos quadros abaixo para aprender como fugir dos golpes mais comuns de forma simples e rápida.
+        </p>
     </header>
 
-    <main>
+    <!-- Área Principal / Grade de Golpes -->
+    <main class="max-w-4xl mx-auto px-4 pb-20 flex-grow">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="lista-golpes">
+            <!-- Os cards serão injetados aqui via JavaScript -->
+        </div>
+    </main>
 
-        <h2 class="secao-titulo">🎯 Jogo de Treino: Golpe ou Seguro?</h2>
-        
-        <section class="simulador-area" aria-label="Simulador de Mensagens Suspeitas">
-            <p style="text-align: center; font-weight: bold;">Veja a mensagem abaixo na tela simulada. O que você faria?</p>
+    <!-- Rodapé -->
+    <footer class="bg-cartao border-t-4 border-borda py-8 text-center mt-auto">
+        <p class="text-lg font-bold">Navegue com Segurança! Feito com carinho para você.</p>
+        <p class="text-md mt-2">Na dúvida, sempre peça ajuda a um familiar de confiança.</p>
+    </footer>
+
+    <!-- MODAL (Janela que abre por cima) -->
+    <div id="modal-golpe" class="fixed inset-0 bg-black bg-opacity-70 hidden flex justify-center items-center p-4 z-50">
+        <div class="bg-cartao border-4 border-primaria rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto flex flex-col relative shadow-2xl">
             
-            <div id="simulador-conteudo">
+            <button onclick="fecharModal()" class="absolute top-4 right-4 bg-destaque hover:bg-borda text-texto rounded-full p-2" aria-label="Fechar janela">
+                <svg class="w-8 h-8 icone" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <div class="p-8">
+                <div class="flex items-center justify-center bg-destaque rounded-full w-24 h-24 mx-auto mb-6">
+                    <span id="modal-icone" class="text-5xl"></span>
+                </div>
+                
+                <h2 id="modal-titulo" class="text-3xl font-extrabold text-center mb-6 text-primaria"></h2>
+                
+                <div class="space-y-6 text-xl">
+                    <div class="bg-destaque p-6 rounded-xl border-2 border-borda">
+                        <h3 class="font-bold flex items-center gap-2 mb-2 text-2xl">
+                            <span class="text-red-600 text-3xl">⚠️</span> Como é o golpe:
+                        </h3>
+                        <p id="modal-como-funciona" class="leading-relaxed"></p>
+                    </div>
+
+                    <div class="bg-fundo p-6 rounded-xl border-2 border-borda">
+                        <h3 class="font-bold flex items-center gap-2 mb-2 text-2xl">
+                            <span class="text-green-600 text-3xl">🛡️</span> Como se proteger:
+                        </h3>
+                        <p id="modal-como-proteger" class="leading-relaxed font-semibold"></p>
+                    </div>
                 </div>
 
-            <div class="opcoes-botoes">
-                <button class="botao-opcao botao-golpe" onclick="verificarEscolha('golpe')">🚨 É GOLPE!</button>
-                <button class="botao-opcao botao-seguro" onclick="verificarEscolha('seguro')">✅ É SEGURO</button>
+                <button onclick="fecharModal()" class="mt-8 w-full btn-primario bg-primaria hover:bg-primariaHover text-white text-2xl font-bold py-4 px-8 rounded-xl transition-colors text-center shadow-lg uppercase tracking-wide">
+                    Entendi, Fechar Janela
+                </button>
             </div>
+        </div>
+    </div>
 
-            <div id="resposta-feedback" class="feedback-resposta">
-                <h3 id="titulo-feedback" style="margin-top: 0;"></h3>
-                <p id="texto-feedback"></p>
-                <button class="botao-acesso" style="margin: 20px auto 0 auto;" onclick="proximoCenario()">Próximo Desafio ➡️</button>
-            </div>
-        </section>
-
-
-        <h2 class="secao-titulo">📚 Catálogo de Golpes Comuns</h2>
-
-        <article class="cartao">
-            <h2><span class="icone" aria-hidden="true">📱</span> O Golpe do WhatsApp (Falso Familiar)</h2>
-            <p><strong>Como acontece:</strong> Alguém te manda mensagem no WhatsApp de um número que você não conhece, mas com a foto do seu filho, neto ou outro parente próximo. Eles inventam que trocaram de aparelho ou que o celular quebrou, pedindo um PIX urgente.</p>
-            
-            <div class="destaque-perigo">
-                <strong>Atenção:</strong> Golpistas usam fotos públicas das redes sociais para fingir que são as pessoas que você ama.
-            </div>
-            
-            <div class="destaque-seguro">
-                <strong>Como se defender:</strong>
-                <ul>
-                    <li>Não faça transferências ou pagamentos.</li>
-                    <li>Faça uma ligação de voz normal para o número antigo do seu parente.</li>
-                    <li>Nunca confirme dados pessoais a números desconhecidos.</li>
-                </ul>
-            </div>
-        </article>
-
-        <article class="cartao">
-            <h2><span class="icone" aria-hidden="true">🏦</span> Links por Mensagem (SMS/WhatsApp)</h2>
-            <p><strong>Como acontece:</strong> Você recebe um torpedo no celular ou mensagem no WhatsApp dizendo que sua conta do banco tem uma movimentação estranha, ou que seu cartão foi bloqueado. Eles enviam um link azul para você clicar.</p>
-            
-            <div class="destaque-perigo">
-                <strong>Atenção:</strong> Os bancos de verdade nunca enviam links em SMS ou WhatsApp pedindo senhas ou dados!
-            </div>
-            
-            <div class="destaque-seguro">
-                <strong>Como se defender:</strong>
-                <ul>
-                    <li>NUNCA aperte ou toque em links que desconhecidos te mandam.</li>
-                    <li>Se ficou em dúvida se é real, feche o aplicativo e abra o aplicativo oficial do seu banco, ou ligue para o número de suporte que fica colado atrás do seu cartão plástico.</li>
-                </ul>
-            </div>
-        </article>
-
-        <article class="cartao">
-            <h2><span class="icone" aria-hidden="true">🛒</span> Promoções Boas Demais para ser Verdade</h2>
-            <p><strong>Como acontece:</strong> Durante a navegação em redes sociais, aparece um anúncio de marca muito conhecida com um desconto gigantesco (exemplo: geladeira de R$ 3.000 por R$ 450).</p>
-            
-            <div class="destaque-perigo">
-                <strong>Atenção:</strong> Quando o preço for inacreditavelmente baixo, é quase 100% de certeza de ser um site falso para roubar seus dados de cartão ou receber seu PIX.
-            </div>
-            
-            <div class="destaque-seguro">
-                <strong>Como se defender:</strong>
-                <ul>
-                    <li>Pesquise a mesma loja diretamente pelo navegador de internet (como o Google), sem clicar no link do anúncio.</li>
-                    <li>Peça para alguém mais jovem da sua confiança lhe ajudar a analisar se a oferta é legítima antes de efetuar qualquer pagamento.</li>
-                </ul>
-            </div>
-        </article>
-
-        <article class="cartao">
-            <h2><span class="icone" aria-hidden="true">📞</span> Golpe da Falsa Central de Segurança (0800)</h2>
-            <p><strong>Como acontece:</strong> Você recebe uma ligação automatizada ou mensagem dizendo que uma compra de alto valor foi feita no seu cartão. Eles pedem para você ligar urgente para uma "Central de Segurança" usando um número que começa com 0800.</p>
-            
-            <div class="destaque-perigo">
-                <strong>Atenção:</strong> Ao ligar, um atendente muito educado dirá que sua conta está em perigo e pedirá para você fazer transferências PIX ou baixar um aplicativo para "proteger" o celular.
-            </div>
-            
-            <div class="destaque-seguro">
-                <strong>Como se defender:</strong>
-                <ul>
-                    <li>Desligue o telefone na hora.</li>
-                    <li>Os bancos nunca solicitam transferências para "contas seguras" e nem pedem para instalar programas ou aplicativos fora da loja oficial do seu aparelho.</li>
-                </ul>
-            </div>
-        </article>
-
-
-        <h2 class="secao-titulo">🛡️ Minha Lista de Proteção (Checklist)</h2>
-        <section class="cartao" aria-label="Checklist de Segurança">
-            <p>Selecione abaixo as ações que você já realiza no seu dia a dia para ver o quanto você já está protegido!</p>
-            
-            <div class="item-checklist" onclick="marcarItem(this, event)">
-                <input type="checkbox" id="opcao-whats" onchange="calcularSeguranca()">
-                <label for="opcao-whats"><strong>Eu tenho "Confirmação em Duas Etapas" ativada no meu WhatsApp.</strong></label>
-            </div>
-
-            <div class="item-checklist" onclick="marcarItem(this, event)">
-                <input type="checkbox" id="opcao-ligar" onchange="calcularSeguranca()">
-                <label for="opcao-ligar"><strong>Eu sempre ligo para confirmar antes de fazer PIX para parentes que pedem no WhatsApp.</strong></label>
-            </div>
-
-            <div class="item-checklist" onclick="marcarItem(this, event)">
-                <input type="checkbox" id="opcao-senha" onchange="calcularSeguranca()">
-                <label for="opcao-senha"><strong>Minhas senhas de banco não estão anotadas no bloco de notas do celular ou atrás do cartão.</strong></label>
-            </div>
-
-            <div class="item-checklist" onclick="marcarItem(this, event)">
-                <input type="checkbox" id="opcao-links" onchange="calcularSeguranca()">
-                <label for="opcao-links"><strong>Eu nunca clico em links que prometem prêmios ou dinheiro fácil por SMS.</strong></label>
-            </div>
-
-            <div class="item-checklist" onclick="marcarItem(this, event)">
-                <input type="checkbox" id="opcao-aplicativos" onchange="calcularSeguranca()">
-                <label for="opcao-aplicativos"><strong>Eu só instalo novos aplicativos usando a loja oficial (Play Store no Android ou App Store no iPhone).</strong></label>
-            </div>
-
-            <div id="resultado-checklist" class="resultado-checklist">
-                Marque alguma opção para ver seu resultado!
-            </div>
-        </section>
-
-
-        <h2 class="secao-titulo">📖 Dicionário da Internet Simplificado</h2>
-        <section aria-label="Dicionário">
-            <p style="text-align: center; margin-bottom: 25px;">Toque nas palavras abaixo para ver o que elas significam em linguagem simples!</p>
-            
-            <details>
-                <summary>🔗 O que é um "Link"?</summary>
-                <div class="conteudo-termo">
-                    É um endereço na internet, geralmente em azul e sublinhado (como <span style="color: blue; text-decoration: underline;">www.loja.com</span>). Ao clicar nele, você é levado para um site ou página externa. Cuidado ao clicar em links recebidos de desconhecidos!
-                </div>
-            </details>
-
-            <details>
-                <summary>💸 O que é o "PIX"?</summary>
-                <div class="conteudo-termo">
-                    É um sistema moderno que permite enviar e receber dinheiro em segundos de
+    <!-- Conecta o arquivo de scripts JS -->
+    <script src="script.js"></script>
+</body>
+</html>

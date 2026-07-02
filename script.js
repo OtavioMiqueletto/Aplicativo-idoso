@@ -1,157 +1,132 @@
-// --- 1. CONTROLE DE ACESSIBILIDADE (FONTE E CONTRASTE) ---
-let tamanhoFonteAtual = 18; 
-const tamanhoMinimo = 14;
-const tamanhoMaximo = 32;
-
-function alterarTamanhoFonte(mudanca) {
-    tamanhoFonteAtual += mudanca;
-    
-    if (tamanhoFonteAtual < tamanhoMinimo) tamanhoFonteAtual = tamanhoMinimo;
-    if (tamanhoFonteAtual > tamanhoMaximo) tamanhoFonteAtual = tamanhoMaximo;
-
-    document.documentElement.style.setProperty('--tamanho-fonte-base', tamanhoFonteAtual + 'px');
-}
-
-function alternarAltoContraste() {
-    document.body.classList.toggle('alto-contraste');
-}
-
-// --- 2. CONTROLE DA LISTA DE VERIFICAÇÃO (CHECKLIST) ---
-function marcarItem(elemento, event) {
-    // Se o usuário clicou direto no checkbox ou nos elementos de texto internos da label, deixa o navegador agir nativamente
-    if (event.target.tagName === 'INPUT' || event.target.tagName === 'LABEL' || event.target.closest('label')) {
-        return;
-    }
-    
-    // Altera o estado do checkbox manualmente se o clique ocorreu na área vazia da div do card
-    const checkbox = elemento.querySelector('input[type="checkbox"]');
-    if (checkbox) {
-        checkbox.checked = !checkbox.checked;
-        calcularSeguranca();
-    }
-}
-
-function calcularSeguranca() {
-    let marcados = 0;
-    
-    if (document.getElementById('opcao-whats').checked) marcados++;
-    if (document.getElementById('opcao-ligar').checked) marcados++;
-    if (document.getElementById('opcao-senha').checked) marcados++;
-    if (document.getElementById('opcao-links').checked) marcados++;
-    if (document.getElementById('opcao-aplicativos').checked) marcados++;
-
-    const divResultado = document.getElementById('resultado-checklist');
-    
-    if (marcados === 0) {
-        divResultado.innerHTML = "❌ Marque os itens acima para avaliar sua segurança.";
-        divResultado.style.backgroundColor = "var(--cor-botao-fundo)";
-        divResultado.style.color = "var(--cor-texto)";
-    } else if (marcados <= 2) {
-        divResultado.innerHTML = "⚠️ Nível: Alerta! Você pode se proteger mais. Tente aplicar as dicas acima no seu telefone o quanto antes.";
-        divResultado.style.backgroundColor = "#e53e3e";
-        divResultado.style.color = "#ffffff";
-    } else if (marcados <= 4) {
-        divResultado.innerHTML = "🛡️ Nível: Muito bom! Você já toma ótimos cuidados de segurança. Continue assim!";
-        divResultado.style.backgroundColor = "#dd6b20";
-        divResultado.style.color = "#ffffff";
-    } else {
-        divResultado.innerHTML = "👑 Nível: Mestre da Segurança! Parabéns! Seu celular está muito protegido contra golpistas.";
-        divResultado.style.backgroundColor = "var(--cor-sucesso)";
-        divResultado.style.color = "#ffffff";
-    }
-}
-
-// --- 3. CONTROLE DO JOGO / SIMULADOR INTERATIVO ---
-const cenarios = [
+// Dados dos golpes
+const golpes = [
     {
-        titulo: "Desafio 1: Conversa no WhatsApp",
-        tipo: "WhatsApp",
-        mensagemHtml: `
-            <div class="balao-conversa">Oi mãe! Esse é meu número novo. Salva aí na sua agenda tá?</div>
-            <div class="balao-conversa">Estou tentando fazer um pagamento aqui mas meu aplicativo do banco deu erro. Você consegue fazer um PIX de R$ 900 para mim? Te pago de volta amanhã cedo, juro! 🙏</div>
-        `,
-        respostaCorreta: "golpe",
-        explicacaoCorreta: "Excelente escolha! É um GOLPE! Um número desconhecido pedindo PIX urgente fingindo ser seu filho é o golpe mais comum do WhatsApp. Sempre ligue para o número antigo dele para conferir por ligação de voz ou vídeo.",
-        explicacaoIncorreta: "Atenção! Isso é um GOLPE perigoso. Nunca envie dinheiro para números novos sem antes telefonar de volta para o número original e falar cara a cara ou ouvir a voz real do seu parente!"
+        id: 'whatsapp',
+        icone: '📱',
+        titulo: 'Golpe do WhatsApp',
+        descricaoCurta: 'Alguém com a foto de um parente pede dinheiro urgente.',
+        comoFunciona: 'O golpista pega a foto de um filho ou neto seu nas redes sociais, usa um número diferente e manda mensagem dizendo que trocou de número e precisa de um PIX urgente para pagar uma conta.',
+        comoProteger: 'NUNCA faça transferências. Ligue por telefone (não pelo WhatsApp) para o número ANTIGO que você tem da pessoa para confirmar se é ela mesma.'
     },
     {
-        titulo: "Desafio 2: Mensagem de Texto (SMS) do Banco",
-        tipo: "SMS",
-        mensagemHtml: `
-            <div class="balao-conversa" style="background-color: #f7fafc; color: #1a202c;">
-                <strong>BANCO NOTÍCIA:</strong> Compra aprovada no valor de R$ 2.450,00 nas Lojas de Varejo em 25/06/2026. Caso desconheça a transação, cancele agora mesmo clicando no link: <u>bancoseguro-ajuda.com/recuperar</u>
-            </div>
-        `,
-        respostaCorreta: "golpe",
-        explicacaoCorreta: "Correto! É um GOLPE! Bancos de verdade nunca mandam links de cancelamento ou que peçam seus dados e senhas em mensagens de texto. Se tiver dúvida, ignore e verifique diretamente em seu extrato oficial.",
-        explicacaoIncorreta: "Muito cuidado! É um GOLPE clássico. Bancos de verdade NUNCA enviam mensagens com links urgentes de cancelamento de compras. Eles usam esses sites falsos para capturar sua senha bancária."
+        id: 'banco',
+        icone: '🏦',
+        titulo: 'Falso Atendente de Banco',
+        descricaoCurta: 'Ligação dizendo que seu cartão foi clonado.',
+        comoFunciona: 'Alguém liga dizendo ser do seu banco, informando compras estranhas no seu cartão. Eles pedem sua senha ou mandam um motoqueiro buscar o cartão na sua casa.',
+        comoProteger: 'Desligue imediatamente! O banco nunca pede sua senha e nunca manda buscar cartões na sua casa. Se estiver na dúvida, vá pessoalmente à sua agência.'
     },
     {
-        titulo: "Desafio 3: Contato do seu Gerente Real",
-        tipo: "Contato Físico",
-        mensagemHtml: `
-            <div class="balao-conversa" style="background-color: #f7fafc; color: #1a202c;">
-                Você está no banco oficial da sua cidade ou abriu o seu aplicativo do banco que já usa há anos e há um aviso padrão na sua caixa de entrada oficial sobre atualizações de segurança para as agências físicas.
-            </div>
-        `,
-        respostaCorreta: "seguro",
-        explicacaoCorreta: "Perfeito! Isso é SEGURO. Informações vistas dentro do aplicativo oficial que você baixou na Play Store/App Store ou tiradas na agência oficial do seu banco físico com o gerente de confiança são seguras.",
-        explicacaoIncorreta: "Na verdade, isso é SEGURO! Consultar informações na própria agência do banco ou direto no app oficial (que você já tinha instalado de forma segura) é o método correto de cuidar das suas contas!"
+        id: 'links',
+        icone: '🔗',
+        titulo: 'Links Falsos (Promoções)',
+        descricaoCurta: 'Mensagens no celular sobre prêmios ou produtos muito baratos.',
+        comoFunciona: 'Você recebe um SMS ou mensagem no WhatsApp dizendo que você ganhou um prêmio, tem pontos a vencer ou com uma geladeira por um preço absurdo de barato. Há um link azul para clicar.',
+        comoProteger: 'Não clique nesses links azuis! Apague a mensagem. Se a promoção parece boa demais para ser verdade, provavelmente é mentira.'
+    },
+    {
+        id: 'amoroso',
+        icone: '❤️',
+        titulo: 'Golpe do Namoro Virtual',
+        descricaoCurta: 'Pessoa estranha muito carinhosa na internet.',
+        comoFunciona: 'Alguém que você não conhece começa a conversar com você, se mostra muito apaixonado rapidamente e, de repente, inventa uma história triste pedindo dinheiro para uma passagem ou cirurgia.',
+        comoProteger: 'Nunca envie dinheiro, PIX ou dados pessoais para pessoas que você conheceu apenas pela internet e nunca viu pessoalmente.'
     }
 ];
 
-let cenarioAtualIndex = 0;
-
-function carregarCenario(index) {
-    const cenario = cenarios[index];
-    const divCenario = document.getElementById('simulador-conteudo');
+// 1. Função para renderizar os cards na tela inicial
+function renderizarCards() {
+    const container = document.getElementById('lista-golpes');
     
-    // Oculta a área de feedback
-    document.getElementById('resposta-feedback').style.display = 'none';
-
-    // Carrega o layout visual da conversa
-    divCenario.innerHTML = `
-        <h3 style="text-align: center; color: var(--cor-destaque);">${cenario.titulo}</h3>
-        <div class="mensagem-tela">
-            <div style="font-size: 0.85em; color: #666666; text-align: center; margin-bottom: 10px;">Conversa Recebida</div>
-            ${cenario.mensagemHtml}
-        </div>
-    `;
+    golpes.forEach(golpe => {
+        const card = document.createElement('button');
+        // Estilo do botão card (acessível, grande área de clique)
+        card.className = "bg-cartao border-4 border-borda rounded-2xl p-6 text-left hover:border-primaria hover:shadow-lg transition-all focus:outline-none focus:ring-4 focus:ring-primaria flex flex-col items-center sm:items-start text-center sm:text-left cursor-pointer transform hover:-translate-y-1";
+        card.setAttribute('aria-label', `Ler mais sobre ${golpe.titulo}`);
+        card.onclick = () => abrirModal(golpe.id);
+        
+        card.innerHTML = `
+            <div class="text-6xl mb-4">${golpe.icone}</div>
+            <h2 class="text-2xl font-bold mb-3 text-texto w-full">${golpe.titulo}</h2>
+            <p class="text-lg opacity-90">${golpe.descricaoCurta}</p>
+            <div class="mt-6 font-bold text-primaria text-lg flex items-center gap-2 w-full justify-center sm:justify-start">
+                Ler como se proteger 
+                <svg class="w-6 h-6 icone" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </div>
+        `;
+        container.appendChild(card);
+    });
 }
 
-function verificarEscolha(escolhaUsuario) {
-    const cenario = cenarios[cenarioAtualIndex];
-    const divFeedback = document.getElementById('resposta-feedback');
-    const tituloFeedback = document.getElementById('titulo-feedback');
-    const textoFeedback = document.getElementById('texto-feedback');
+// 2. Funções do Modal
+function abrirModal(id) {
+    const golpe = golpes.find(g => g.id === id);
+    if (!golpe) return;
 
-    divFeedback.style.display = 'block';
+    document.getElementById('modal-icone').innerText = golpe.icone;
+    document.getElementById('modal-titulo').innerText = golpe.titulo;
+    document.getElementById('modal-como-funciona').innerText = golpe.comoFunciona;
+    document.getElementById('modal-como-proteger').innerText = golpe.comoProteger;
 
-    if (escolhaUsuario === cenario.respostaCorreta) {
-        tituloFeedback.innerText = "🎉 Resposta Correta!";
-        tituloFeedback.style.color = "var(--cor-sucesso)";
-        textoFeedback.innerText = cenario.explicacaoCorreta;
-    } else {
-        tituloFeedback.innerText = "❌ Alerta de Segurança!";
-        tituloFeedback.style.color = "var(--cor-alerta)";
-        textoFeedback.innerText = cenario.explicacaoIncorreta;
-    }
+    const modal = document.getElementById('modal-golpe');
+    modal.classList.remove('hidden');
+    document.body.classList.add('modal-aberto');
     
-    // Faz a página rolar de forma suave até o feedback
-    divFeedback.scrollIntoView({ behavior: 'smooth' });
+    // Focar no botão de fechar para acessibilidade
+    modal.querySelector('button').focus();
 }
 
-function proximoCenario() {
-    cenarioAtualIndex++;
-    if (cenarioAtualIndex >= cenarios.length) {
-        // Reinicia os desafios caso termine
-        cenarioAtualIndex = 0;
+function fecharModal() {
+    document.getElementById('modal-golpe').classList.add('hidden');
+    document.body.classList.remove('modal-aberto');
+}
+
+// Fechar modal ao clicar na área escura (fora da janela)
+document.getElementById('modal-golpe').addEventListener('click', function(e) {
+    if (e.target === this) {
+        fecharModal();
     }
-    carregarCenario(cenarioAtualIndex);
+});
+
+// Fechar modal ao apertar a tecla "Esc"
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('modal-golpe').classList.contains('hidden')) {
+        fecharModal();
+    }
+});
+
+// 3. Funções de Acessibilidade (Tamanho da Fonte)
+let tamanhoBase = 18; // Tamanho inicial
+const minTamanho = 14;
+const maxTamanho = 32; 
+
+function mudarTamanhoFonte(mudanca) {
+    tamanhoBase += mudanca;
+    
+    if (tamanhoBase < minTamanho) tamanhoBase = minTamanho;
+    if (tamanhoBase > maxTamanho) tamanhoBase = maxTamanho;
+
+    document.documentElement.style.fontSize = `${tamanhoBase}px`;
 }
 
-// Inicializa o primeiro desafio na tela quando a página carrega
-window.onload = function() {
-    carregarCenario(0);
-    calcularSeguranca();
+// 4. Função de Acessibilidade (Alto Contraste)
+function alternarContraste() {
+    document.body.classList.toggle('alto-contraste');
+    
+    const estaAtivo = document.body.classList.contains('alto-contraste');
+    localStorage.setItem('altoContraste', estaAtivo);
+}
+
+// Verifica ao carregar a página se o contraste estava ativo antes
+function checarPreferencias() {
+    const contrasteSalvo = localStorage.getItem('altoContraste');
+    if (contrasteSalvo === 'true') {
+        document.body.classList.add('alto-contraste');
+    }
+}
+
+// Iniciar o site
+window.onload = () => {
+    renderizarCards();
+    checarPreferencias();
 };
