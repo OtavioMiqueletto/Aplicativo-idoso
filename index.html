@@ -3,296 +3,382 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internet Segura - Guia para Idosos</title>
+    <title>Guia de Segurança Digital para Idosos</title>
+    <!-- Tailwind CSS para estruturação responsiva rápida -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // Configuração do Tailwind para usar variáveis CSS (facilita o alto contraste)
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        fundo: 'var(--cor-fundo)',
-                        texto: 'var(--cor-texto)',
-                        cartao: 'var(--cor-cartao)',
-                        primaria: 'var(--cor-primaria)',
-                        primariaHover: 'var(--cor-primaria-hover)',
-                        destaque: 'var(--cor-destaque)',
-                        borda: 'var(--cor-borda)',
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        /* Variáveis de Cores Padrão (Cores suaves e amigáveis) */
+        /* Variáveis de cores para gerenciar o modo padrão e o alto contraste */
         :root {
-            --cor-fundo: #f0fdf4; /* Verde bem claro */
-            --cor-texto: #1f2937; /* Cinza escuro para boa leitura */
-            --cor-cartao: #ffffff; /* Branco */
-            --cor-primaria: #166534; /* Verde escuro (confiança/segurança) */
-            --cor-primaria-hover: #14532d;
-            --cor-destaque: #dcfce7; /* Verde claro para fundos secundários */
-            --cor-borda: #bbf7d0;
-            font-size: 18px; /* Tamanho base maior para idosos */
-            transition: font-size 0.3s ease;
+            --bg-body: #f3f4f6;
+            --text-main: #1f2937;
+            --bg-card: #ffffff;
+            --border-card: #e5e7eb;
+            --bg-header: #2563eb;
+            --text-header: #ffffff;
+            --bg-btn: #3b82f6;
+            --text-btn: #ffffff;
+            --bg-btn-hover: #2563eb;
+            --bg-modal: rgba(0, 0, 0, 0.6);
+            --focus-ring: #2563eb;
         }
 
-        /* Variáveis de Cores para Alto Contraste */
-        .alto-contraste {
-            --cor-fundo: #000000;
-            --cor-texto: #ffff00; /* Amarelo no preto é o melhor contraste para visão subnormal */
-            --cor-cartao: #1a1a1a;
-            --cor-primaria: #ffff00;
-            --cor-primaria-hover: #ffffff;
-            --cor-destaque: #333333;
-            --cor-borda: #ffff00;
+        /* Tema de Alto Contraste */
+        body.alto-contraste {
+            --bg-body: #000000;
+            --text-main: #ffff00;
+            --bg-card: #000000;
+            --border-card: #ffff00;
+            --bg-header: #000000;
+            --text-header: #ffff00;
+            --bg-btn: #000000;
+            --text-btn: #ffff00;
+            --bg-btn-hover: #333300;
+            --bg-modal: rgba(255, 255, 255, 0.3);
+            --focus-ring: #ffff00;
         }
 
-        /* Ajustes específicos de alto contraste para botões e textos */
-        .alto-contraste .btn-primario {
-            background-color: var(--cor-primaria);
-            color: #000000 !important;
-            font-weight: bold;
+        /* Aplicação das variáveis nas tags e classes customizadas */
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            font-family: Arial, sans-serif;
+            /* A fonte base é controlada via JS (document.documentElement.style.fontSize) para escalar com o Tailwind (rems) */
+        }
+
+        .tema-header {
+            background-color: var(--bg-header);
+            color: var(--text-header);
+            border-bottom: 4px solid var(--border-card);
+        }
+
+        .tema-card {
+            background-color: var(--bg-card);
+            border: 3px solid var(--border-card);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .tema-card:hover, .tema-card:focus {
+            outline: 4px solid var(--focus-ring);
+            transform: translateY(-2px);
+        }
+
+        .tema-btn {
+            background-color: var(--bg-btn);
+            color: var(--text-btn);
+            border: 2px solid var(--text-main);
         }
         
-        .alto-contraste .btn-primario:hover {
-            background-color: var(--cor-primaria-hover);
+        .tema-btn:hover {
+            background-color: var(--bg-btn-hover);
+        }
+        
+        .tema-btn-close {
+            background-color: #dc2626; /* Vermelho claro */
+            color: white;
+            border: 2px solid var(--text-main);
         }
 
-        .alto-contraste .icone {
-            stroke: #ffff00;
+        body.alto-contraste .tema-btn-close {
+            background-color: #000000;
+            color: #ffff00;
+            border: 2px solid #ffff00;
         }
 
-        /* Oculta scrollbar no modal para ficar mais limpo */
-        .modal-aberto {
-            overflow: hidden;
+        /* Animação suave para o Modal */
+        #modalOverlay {
+            background-color: var(--bg-modal);
+            backdrop-filter: blur(2px);
         }
-
-        /* Transições suaves */
-        body {
-            transition: background-color 0.3s, color 0.3s;
+        
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 4px solid var(--border-card);
+        }
+        
+        body.alto-contraste .modal-content {
+            border: 4px solid #ffff00;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
         }
     </style>
 </head>
-<body class="bg-fundo text-texto font-sans min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col">
 
-    <!-- Barra de Acessibilidade -->
-    <div class="bg-cartao border-b-4 border-borda py-3 shadow-sm sticky top-0 z-10">
-        <div class="max-w-4xl mx-auto px-4 flex flex-wrap justify-center sm:justify-between items-center gap-4">
-            <span class="font-bold text-xl hidden sm:block">⚙️ Opções de Leitura:</span>
-            <div class="flex gap-3">
-                <button onclick="mudarTamanhoFonte(2)" class="bg-destaque border-2 border-primaria text-texto px-4 py-2 rounded-xl font-bold text-lg hover:bg-borda flex items-center gap-2 transition-colors" aria-label="Aumentar tamanho da letra">
-                    A<span class="text-2xl">+</span>
+    <!-- Cabeçalho e Ferramentas de Acessibilidade -->
+    <header class="tema-header p-6">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <h1 class="text-3xl font-bold mb-2">Internet Segura</h1>
+                <p class="text-xl">Aprenda a se proteger de golpes pelo celular</p>
+            </div>
+            
+            <!-- Botões de Acessibilidade -->
+            <div class="flex flex-wrap justify-center gap-3">
+                <button onclick="mudarTamanhoTexto(2)" class="tema-btn px-4 py-3 rounded-xl font-bold text-lg flex items-center gap-1 shadow-md" aria-label="Aumentar tamanho do texto">
+                    A+ <span class="text-sm">(Aumentar)</span>
                 </button>
-                <button onclick="mudarTamanhoFonte(-2)" class="bg-destaque border-2 border-primaria text-texto px-4 py-2 rounded-xl font-bold text-lg hover:bg-borda flex items-center gap-2 transition-colors" aria-label="Diminuir tamanho da letra">
-                    A<span class="text-2xl">-</span>
+                <button onclick="mudarTamanhoTexto(-2)" class="tema-btn px-4 py-3 rounded-xl font-bold text-lg flex items-center gap-1 shadow-md" aria-label="Diminuir tamanho do texto">
+                    A- <span class="text-sm">(Diminuir)</span>
                 </button>
-                <button onclick="alternarContraste()" class="bg-texto text-cartao border-2 border-texto px-4 py-2 rounded-xl font-bold text-lg hover:opacity-90 flex items-center gap-2 transition-colors" aria-label="Alternar modo de alto contraste">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                    Contraste
+                <button onclick="alternarContraste()" class="tema-btn px-4 py-3 rounded-xl font-bold text-lg flex items-center gap-2 shadow-md" aria-label="Alternar modo de alto contraste">
+                    👁️ Alto Contraste
                 </button>
             </div>
         </div>
-    </div>
-
-    <!-- Cabeçalho Principal -->
-    <header class="max-w-4xl mx-auto px-4 py-12 text-center">
-        <h1 class="text-4xl sm:text-5xl font-extrabold mb-6 leading-tight">Aprenda a se Proteger na Internet!</h1>
-        <p class="text-xl sm:text-2xl mb-8 leading-relaxed">
-            A internet é ótima, mas precisamos ter cuidado. Clique nos quadros abaixo para aprender como fugir dos golpes mais comuns de forma simples e rápida.
-        </p>
     </header>
 
-    <!-- Área Principal / Grade de Golpes -->
-    <main class="max-w-4xl mx-auto px-4 pb-20 flex-grow">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="lista-golpes">
-            <!-- Os cards serão injetados aqui via JavaScript -->
+    <!-- Conteúdo Principal - Grade de Botões -->
+    <main class="flex-grow max-w-4xl mx-auto p-6 w-full mt-6">
+        <h2 class="text-2xl font-bold mb-8 text-center bg-yellow-200 text-black p-4 rounded-xl border-2 border-black inline-block w-full">
+            Toque em um dos botões abaixo para aprender a se proteger:
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <button onclick="abrirModal('whatsapp')" class="tema-card p-8 rounded-2xl flex flex-col items-center text-center transition-transform w-full">
+                <span class="text-6xl mb-4">📱</span>
+                <h3 class="text-2xl font-bold">Golpes no WhatsApp</h3>
+                <p class="mt-2 text-lg opacity-90">Falsos filhos pedindo dinheiro</p>
+            </button>
+
+            <button onclick="abrirModal('banco')" class="tema-card p-8 rounded-2xl flex flex-col items-center text-center transition-transform w-full">
+                <span class="text-6xl mb-4">🏦</span>
+                <h3 class="text-2xl font-bold">Falso Funcionário do Banco</h3>
+                <p class="mt-2 text-lg opacity-90">Ligações pedindo senhas ou o cartão</p>
+            </button>
+
+            <button onclick="abrirModal('links')" class="tema-card p-8 rounded-2xl flex flex-col items-center text-center transition-transform w-full">
+                <span class="text-6xl mb-4">🔗</span>
+                <h3 class="text-2xl font-bold">Links Falsos no Celular</h3>
+                <p class="mt-2 text-lg opacity-90">Mensagens que roubam seus dados</p>
+            </button>
+
+            <button onclick="abrirModal('compras')" class="tema-card p-8 rounded-2xl flex flex-col items-center text-center transition-transform w-full">
+                <span class="text-6xl mb-4">🛒</span>
+                <h3 class="text-2xl font-bold">Promoções Milagrosas</h3>
+                <p class="mt-2 text-lg opacity-90">Produtos muito baratos na internet</p>
+            </button>
+
+            <button onclick="abrirModal('amoroso')" class="tema-card p-8 rounded-2xl flex flex-col items-center text-center transition-transform md:col-span-2 w-full">
+                <span class="text-6xl mb-4">❤️</span>
+                <h3 class="text-2xl font-bold">Golpe do Amor Virtual</h3>
+                <p class="mt-2 text-lg opacity-90">Pessoas que pedem dinheiro após ganhar confiança</p>
+            </button>
+
         </div>
     </main>
 
-    <!-- Rodapé -->
-    <footer class="bg-cartao border-t-4 border-borda py-8 text-center mt-auto">
-        <p class="text-lg font-bold">Navegue com Segurança! Feito com carinho para você.</p>
-        <p class="text-md mt-2">Na dúvida, sempre peça ajuda a um familiar de confiança.</p>
+    <footer class="tema-header p-6 mt-12 text-center">
+        <p class="text-lg font-bold">Compartilhe essas informações com seus amigos e familiares.</p>
+        <p class="text-md mt-2">A informação é a melhor proteção contra criminosos.</p>
     </footer>
 
-    <!-- MODAL (Janela que abre por cima) -->
-    <div id="modal-golpe" class="fixed inset-0 bg-black bg-opacity-70 hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-cartao border-4 border-primaria rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto flex flex-col relative shadow-2xl">
+    <!-- Modal (Caixa de Informação) - Escondido por padrão -->
+    <div id="modalOverlay" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div id="modalContainer" class="modal-content relative w-full max-w-2xl mx-auto rounded-2xl p-6 md:p-8 flex flex-col max-h-[90vh]" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
             
-            <!-- Botão Fechar no canto superior -->
-            <button onclick="fecharModal()" class="absolute top-4 right-4 bg-destaque hover:bg-borda text-texto rounded-full p-2" aria-label="Fechar janela">
-                <svg class="w-8 h-8 icone" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-
-            <div class="p-8">
-                <div class="flex items-center justify-center bg-destaque rounded-full w-24 h-24 mx-auto mb-6">
-                    <span id="modal-icone" class="text-5xl"></span>
+            <div class="overflow-y-auto flex-grow pr-2" id="modalScrollArea">
+                <h2 id="modalTitle" class="text-3xl font-bold mb-6 flex items-center gap-3">
+                    <!-- Título inserido pelo JS -->
+                </h2>
+                <div id="modalBody" class="text-xl leading-relaxed space-y-4 mb-8">
+                    <!-- Conteúdo inserido pelo JS -->
                 </div>
-                
-                <h2 id="modal-titulo" class="text-3xl font-extrabold text-center mb-6 text-primaria"></h2>
-                
-                <div class="space-y-6 text-xl">
-                    <div class="bg-destaque p-6 rounded-xl border-2 border-borda">
-                        <h3 class="font-bold flex items-center gap-2 mb-2 text-2xl">
-                            <span class="text-red-600 text-3xl">⚠️</span> Como é o golpe:
-                        </h3>
-                        <p id="modal-como-funciona" class="leading-relaxed"></p>
-                    </div>
+            </div>
 
-                    <div class="bg-fundo p-6 rounded-xl border-2 border-borda">
-                        <h3 class="font-bold flex items-center gap-2 mb-2 text-2xl">
-                            <span class="text-green-600 text-3xl">🛡️</span> Como se proteger:
-                        </h3>
-                        <p id="modal-como-proteger" class="leading-relaxed font-semibold"></p>
-                    </div>
-                </div>
-
-                <!-- Botão Fechar grande no final -->
-                <button onclick="fecharModal()" class="mt-8 w-full btn-primario bg-primaria hover:bg-primariaHover text-white text-2xl font-bold py-4 px-8 rounded-xl transition-colors text-center shadow-lg uppercase tracking-wide">
-                    Entendi, Fechar Janela
+            <div class="mt-6 pt-4 border-t-2 border-gray-300 w-full flex justify-center">
+                <button onclick="fecharModal()" class="tema-btn-close w-full md:w-auto px-10 py-4 rounded-xl font-bold text-2xl shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95">
+                    <span>❌</span> FECHAR E VOLTAR
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT (Lógica do site) -->
+    <!-- JavaScript para Lógica e Acessibilidade -->
     <script>
-        // Dados dos golpes
-        const golpes = [
-            {
-                id: 'whatsapp',
-                icone: '📱',
-                titulo: 'Golpe do WhatsApp',
-                descricaoCurta: 'Alguém com a foto de um parente pede dinheiro urgente.',
-                comoFunciona: 'O golpista pega a foto de um filho ou neto seu nas redes sociais, usa um número diferente e manda mensagem dizendo que trocou de número e precisa de um PIX urgente para pagar uma conta.',
-                comoProteger: 'NUNCA faça transferências. Ligue por telefone (não pelo WhatsApp) para o número ANTIGO que você tem da pessoa para confirmar se é ela mesma.'
-            },
-            {
-                id: 'banco',
-                icone: '🏦',
-                titulo: 'Falso Atendente de Banco',
-                descricaoCurta: 'Ligação dizendo que seu cartão foi clonado.',
-                comoFunciona: 'Alguém liga dizendo ser do seu banco, informando compras estranhas no seu cartão. Eles pedem sua senha ou mandam um motoqueiro buscar o cartão na sua casa.',
-                comoProteger: 'Desligue imediatamente! O banco nunca pede sua senha e nunca manda buscar cartões na sua casa. Se estiver na dúvida, vá pessoalmente à sua agência.'
-            },
-            {
-                id: 'links',
-                icone: '🔗',
-                titulo: 'Links Falsos (Promoções)',
-                descricaoCurta: 'Mensagens no celular sobre prêmios ou produtos muito baratos.',
-                comoFunciona: 'Você recebe um SMS ou mensagem no WhatsApp dizendo que você ganhou um prêmio, tem pontos a vencer ou com uma geladeira por um preço absurdo de barato. Há um link azul para clicar.',
-                comoProteger: 'Não clique nesses links azuis! Apague a mensagem. Se a promoção parece boa demais para ser verdade, provavelmente é mentira.'
-            },
-            {
-                id: 'amoroso',
-                icone: '❤️',
-                titulo: 'Golpe do Namoro Virtual',
-                descricaoCurta: 'Pessoa estranha muito carinhosa na internet.',
-                comoFunciona: 'Alguém que você não conhece começa a conversar com você, se mostra muito apaixonado rapidamente e, de repente, inventa uma história triste pedindo dinheiro para uma passagem ou cirurgia.',
-                comoProteger: 'Nunca envie dinheiro, PIX ou dados pessoais para pessoas que você conheceu apenas pela internet e nunca viu pessoalmente.'
-            }
-        ];
+        // --- 1. Lógica de Acessibilidade (Tamanho da Fonte) ---
+        // Usamos o elemento raiz (html) pois o Tailwind usa unidades 'rem' baseadas nele.
+        let tamanhoFonteAtual = 16; 
+        const rootHtml = document.documentElement;
 
-        // 1. Função para renderizar os cards na tela inicial
-        function renderizarCards() {
-            const container = document.getElementById('lista-golpes');
+        function mudarTamanhoTexto(passo) {
+            tamanhoFonteAtual += passo;
             
-            golpes.forEach(golpe => {
-                const card = document.createElement('button');
-                // Estilo do botão card (acessível, grande área de clique)
-                card.className = "bg-cartao border-4 border-borda rounded-2xl p-6 text-left hover:border-primaria hover:shadow-lg transition-all focus:outline-none focus:ring-4 focus:ring-primaria flex flex-col items-center sm:items-start text-center sm:text-left cursor-pointer transform hover:-translate-y-1";
-                card.setAttribute('aria-label', `Ler mais sobre ${golpe.titulo}`);
-                card.onclick = () => abrirModal(golpe.id);
-                
-                card.innerHTML = `
-                    <div class="text-6xl mb-4">${golpe.icone}</div>
-                    <h2 class="text-2xl font-bold mb-3 text-texto w-full">${golpe.titulo}</h2>
-                    <p class="text-lg opacity-90">${golpe.descricaoCurta}</p>
-                    <div class="mt-6 font-bold text-primaria text-lg flex items-center gap-2 w-full justify-center sm:justify-start">
-                        Ler como se proteger 
-                        <svg class="w-6 h-6 icone" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+            // Limites para o texto não ficar minúsculo demais nem gigante a ponto de quebrar a tela
+            if (tamanhoFonteAtual < 14) tamanhoFonteAtual = 14;
+            if (tamanhoFonteAtual > 26) tamanhoFonteAtual = 26;
+            
+            rootHtml.style.fontSize = tamanhoFonteAtual + 'px';
         }
 
-        // 2. Funções do Modal
-        function abrirModal(id) {
-            const golpe = golpes.find(g => g.id === id);
-            if (!golpe) return;
+        // --- 2. Lógica de Alto Contraste ---
+        function alternarContraste() {
+            document.body.classList.toggle('alto-contraste');
+        }
 
-            document.getElementById('modal-icone').innerText = golpe.icone;
-            document.getElementById('modal-titulo').innerText = golpe.titulo;
-            document.getElementById('modal-como-funciona').innerText = golpe.comoFunciona;
-            document.getElementById('modal-como-proteger').innerText = golpe.comoProteger;
+        // --- 3. Base de Dados dos Golpes (Conteúdo do Modal) ---
+        const conteudoGolpes = {
+            whatsapp: {
+                icone: "📱",
+                titulo: "Golpes no WhatsApp",
+                texto: `
+                    <p class="font-bold text-red-600 dark-alto-contraste">Como funciona:</p>
+                    <p>O criminoso manda mensagem de um número desconhecido usando a foto do seu filho, neto ou amigo. Ele diz que "trocou de número" e, logo depois, inventa uma emergência pedindo uma transferência em dinheiro ou PIX.</p>
+                    
+                    <div class="bg-green-100 p-4 rounded-lg mt-4 border-l-4 border-green-600 text-black">
+                        <p class="font-bold text-green-800 text-2xl mb-2">🛡️ Como se proteger:</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><strong>NUNCA</strong> transfira dinheiro para um número novo sem antes falar com a pessoa.</li>
+                            <li>Ligue para o número <strong>ANTIGO</strong> da pessoa (por telefone normal ou chamada de voz).</li>
+                            <li>Se a pessoa disser que não pode atender ligações, <strong>desconfie na hora</strong>. É golpe.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            banco: {
+                icone: "🏦",
+                titulo: "Falso Funcionário do Banco",
+                texto: `
+                    <p class="font-bold text-red-600">Como funciona:</p>
+                    <p>Você recebe uma ligação de alguém muito educado dizendo ser do seu banco. Eles dizem que seu cartão foi clonado ou que há uma compra suspeita. Eles pedem para você digitar sua senha no telefone e dizem que mandarão um motoboy buscar seu cartão cortado.</p>
+                    
+                    <div class="bg-green-100 p-4 rounded-lg mt-4 border-l-4 border-green-600 text-black">
+                        <p class="font-bold text-green-800 text-2xl mb-2">🛡️ Como se proteger:</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>O banco <strong>NUNCA</strong> manda alguém buscar seu cartão na sua casa.</li>
+                            <li>O banco <strong>NUNCA</strong> pede sua senha por telefone.</li>
+                            <li>Se receber essa ligação, <strong>desligue imediatamente</strong>. Se quiser confirmar, pegue o número que está atrás do seu cartão e ligue usando o celular de outra pessoa.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            links: {
+                icone: "🔗",
+                titulo: "Links Falsos no Celular",
+                texto: `
+                    <p class="font-bold text-red-600">Como funciona:</p>
+                    <p>Você recebe um SMS ou mensagem no WhatsApp dizendo que seus pontos do cartão vão expirar, que tem um pacote nos Correios preso, ou uma multa falsa. Junto, vem um link azul para você clicar.</p>
+                    
+                    <div class="bg-green-100 p-4 rounded-lg mt-4 border-l-4 border-green-600 text-black">
+                        <p class="font-bold text-green-800 text-2xl mb-2">🛡️ Como se proteger:</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><strong>Não clique</strong> em links enviados por mensagens de desconhecidos.</li>
+                            <li>Não preencha formulários na internet com seus dados pessoais (CPF, senhas).</li>
+                            <li>Se estiver na dúvida, feche a mensagem e abra o aplicativo oficial da loja, banco ou Correios.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            compras: {
+                icone: "🛒",
+                titulo: "Promoções Milagrosas",
+                texto: `
+                    <p class="font-bold text-red-600">Como funciona:</p>
+                    <p>Você vê um anúncio no Facebook ou Instagram de um produto caro (como uma TV, celular ou geladeira) por um preço absurdamente barato. Você clica, o site parece verdadeiro, mas após pagar (geralmente por PIX ou boleto), o produto nunca chega.</p>
+                    
+                    <div class="bg-green-100 p-4 rounded-lg mt-4 border-l-4 border-green-600 text-black">
+                        <p class="font-bold text-green-800 text-2xl mb-2">🛡️ Como se proteger:</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Se o preço está barato demais, <strong>é mentira</strong>.</li>
+                            <li>Prefira comprar em lojas grandes e famosas que você já conhece.</li>
+                            <li>Peça ajuda a um familiar mais jovem antes de realizar compras em sites desconhecidos.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            amoroso: {
+                icone: "❤️",
+                titulo: "Golpe do Amor Virtual",
+                texto: `
+                    <p class="font-bold text-red-600">Como funciona:</p>
+                    <p>Uma pessoa desconhecida e muito bonita começa a conversar com você pela internet. Ela ganha sua confiança ao longo de semanas, finge estar apaixonada e, de repente, surge uma "emergência" (doença, viagem, problemas na alfândega) e ela pede dinheiro emprestado.</p>
+                    
+                    <div class="bg-green-100 p-4 rounded-lg mt-4 border-l-4 border-green-600 text-black">
+                        <p class="font-bold text-green-800 text-2xl mb-2">🛡️ Como se proteger:</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><strong>Nunca envie dinheiro</strong> para pessoas que você conheceu apenas pela internet e nunca viu pessoalmente.</li>
+                            <li>Não envie fotos íntimas ou dados pessoais.</li>
+                            <li>Fique atento: criminosos têm paciência e podem conversar por meses antes de pedir dinheiro.</li>
+                        </ul>
+                    </div>
+                `
+            }
+        };
 
-            const modal = document.getElementById('modal-golpe');
-            modal.classList.remove('hidden');
-            document.body.classList.add('modal-aberto');
+        // --- 4. Lógica do Modal ---
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const modalScrollArea = document.getElementById('modalScrollArea');
+
+        function abrirModal(chave) {
+            const dados = conteudoGolpes[chave];
             
-            // Focar no botão de fechar para acessibilidade
-            modal.querySelector('button').focus();
+            // Preencher os dados
+            modalTitle.innerHTML = `<span>${dados.icone}</span> ${dados.titulo}`;
+            modalBody.innerHTML = dados.texto;
+            
+            // Mostrar modal
+            modalOverlay.classList.remove('hidden');
+            
+            // Resetar o scroll para o topo caso a pessoa abra um texto longo
+            modalScrollArea.scrollTop = 0;
+
+            // Prevenir rolagem do fundo
+            document.body.style.overflow = 'hidden';
+            
+            // Ajustes para o modo de alto contraste dentro dos boxes verdes se necessário
+            ajustarCoresModalAltoContraste();
         }
 
         function fecharModal() {
-            document.getElementById('modal-golpe').classList.add('hidden');
-            document.body.classList.remove('modal-aberto');
+            modalOverlay.classList.add('hidden');
+            document.body.style.overflow = 'auto';
         }
 
-        // Fechar modal ao clicar na área escura (fora da janela)
-        document.getElementById('modal-golpe').addEventListener('click', function(e) {
-            if (e.target === this) {
+        // Fecha o modal se clicar na área escura (fora da caixa)
+        modalOverlay.addEventListener('click', function(evento) {
+            if (evento.target === modalOverlay) {
                 fecharModal();
             }
         });
 
-        // Fechar modal ao apertar a tecla "Esc"
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && !document.getElementById('modal-golpe').classList.contains('hidden')) {
+        // Adiciona suporte a tecla "Esc" do teclado para fechar o modal
+        document.addEventListener('keydown', function(evento) {
+            if (evento.key === 'Escape' && !modalOverlay.classList.contains('hidden')) {
                 fecharModal();
             }
         });
 
-        // 3. Funções de Acessibilidade (Tamanho da Fonte)
-        let tamanhoBase = 18; // Tamanho inicial definido no CSS (18px)
-        const minTamanho = 14;
-        const maxTamanho = 32; // Limite máximo para não quebrar muito o layout
-
-        function mudarTamanhoFonte(mudanca) {
-            tamanhoBase += mudanca;
+        // Função auxiliar para garantir que as caixas verdes dentro do modal fiquem visíveis no alto contraste
+        function ajustarCoresModalAltoContraste() {
+            const boxes = document.querySelectorAll('.bg-green-100');
+            const titulos = document.querySelectorAll('.text-red-600');
             
-            // Limita o tamanho para não ficar nem muito pequeno nem gigantesco
-            if (tamanhoBase < minTamanho) tamanhoBase = minTamanho;
-            if (tamanhoBase > maxTamanho) tamanhoBase = maxTamanho;
-
-            // Aplica no elemento raiz (HTML). Como usamos rem/em no tailwind, tudo escala junto!
-            document.documentElement.style.fontSize = `${tamanhoBase}px`;
-        }
-
-        // 4. Função de Acessibilidade (Alto Contraste)
-        function alternarContraste() {
-            document.body.classList.toggle('alto-contraste');
-            
-            // Salva a preferência no navegador (opcional)
-            const estaAtivo = document.body.classList.contains('alto-contraste');
-            localStorage.setItem('altoContraste', estaAtivo);
-        }
-
-        // Verifica ao carregar a página se o contraste estava ativo antes
-        function checarPreferencias() {
-            const contrasteSalvo = localStorage.getItem('altoContraste');
-            if (contrasteSalvo === 'true') {
-                document.body.classList.add('alto-contraste');
+            if (document.body.classList.contains('alto-contraste')) {
+                boxes.forEach(box => {
+                    box.style.backgroundColor = '#000000';
+                    box.style.color = '#ffff00';
+                    box.style.borderColor = '#ffff00';
+                });
+                titulos.forEach(titulo => {
+                    titulo.style.color = '#ffff00';
+                });
+            } else {
+                boxes.forEach(box => {
+                    box.style.backgroundColor = '';
+                    box.style.color = '';
+                    box.style.borderColor = '';
+                });
+                titulos.forEach(titulo => {
+                    titulo.style.color = '';
+                });
             }
         }
 
-        // Iniciar o site
-        window.onload = () => {
-            renderizarCards();
-            checarPreferencias();
-        };
+        // Observador para atualizar as cores dinâmicas do modal caso o contraste seja mudado com o modal aberto
+        const observer = new MutationObserver(ajustarCoresModalAltoContraste);
+        observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
     </script>
 </body>
