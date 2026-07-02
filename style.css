@@ -1,0 +1,92 @@
+/* Variáveis de cores para gerenciar o modo padrão e o alto contraste */
+:root {
+    --bg-body: #f3f4f6;
+    --text-main: #1f2937;
+    --bg-card: #ffffff;
+    --border-card: #e5e7eb;
+    --bg-header: #2563eb;
+    --text-header: #ffffff;
+    --bg-btn: #3b82f6;
+    --text-btn: #ffffff;
+    --bg-btn-hover: #2563eb;
+    --bg-modal: rgba(0, 0, 0, 0.6);
+    --focus-ring: #2563eb;
+}
+
+/* Tema de Alto Contraste */
+body.alto-contraste {
+    --bg-body: #000000;
+    --text-main: #ffff00;
+    --bg-card: #000000;
+    --border-card: #ffff00;
+    --bg-header: #000000;
+    --text-header: #ffff00;
+    --bg-btn: #000000;
+    --text-btn: #ffff00;
+    --bg-btn-hover: #333300;
+    --bg-modal: rgba(255, 255, 255, 0.3);
+    --focus-ring: #ffff00;
+}
+
+/* Aplicação das variáveis nas tags e classes customizadas */
+body {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    transition: all 0.3s ease;
+    font-family: Arial, sans-serif;
+}
+
+.tema-header {
+    background-color: var(--bg-header);
+    color: var(--text-header);
+    border-bottom: 4px solid var(--border-card);
+}
+
+.tema-card {
+    background-color: var(--bg-card);
+    border: 3px solid var(--border-card);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.tema-card:hover, .tema-card:focus {
+    outline: 4px solid var(--focus-ring);
+    transform: translateY(-2px);
+}
+
+.tema-btn {
+    background-color: var(--bg-btn);
+    color: var(--text-btn);
+    border: 2px solid var(--text-main);
+}
+
+.tema-btn:hover {
+    background-color: var(--bg-btn-hover);
+}
+
+.tema-btn-close {
+    background-color: #dc2626;
+    color: white;
+    border: 2px solid var(--text-main);
+}
+
+body.alto-contraste .tema-btn-close {
+    background-color: #000000;
+    color: #ffff00;
+    border: 2px solid #ffff00;
+}
+
+/* Animação suave para o Modal */
+#modalOverlay {
+    background-color: var(--bg-modal);
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    background-color: var(--bg-card);
+    border: 4px solid var(--border-card);
+}
+
+body.alto-contraste .modal-content {
+    border: 4px solid #ffff00;
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+}
